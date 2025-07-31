@@ -28,7 +28,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: github-pages # Name of the artifact uploaded by actions/upload-pages-artifact
-        repository: EUV-Snapshot-Imaging-Spectrograph/euv-snapshot-imaging-spectrographs
+        repository: EUV-Snapshot-Imaging-Spectrograph/euv-snapshot-imaging-spectrograph
         run-id: ${{ github.event.workflow_run.id }} # ID of the workflow run that created the artifact
 
     - name: Deploy to GitHub Pages
