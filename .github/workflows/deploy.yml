@@ -1,0 +1,36 @@
+name: Deploy ESIS Documentation
+
+on:
+  workflow_run:
+    workflows: ["Build ESIS Documentation"] # Name of the workflow in the builder repo
+    types:
+      - completed
+    branches:
+      - main # Trigger only when the builder repo workflow on 'main' completes
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write # Grants permissions to deploy to GitHub Pages
+      id-token: write # Required for deploy-pages to verify the deployment
+      contents: read # Required to checkout the repository (if needed)
+
+    environment:
+      name: github-pages # The environment name for GitHub Pages deployments
+      url: ${{ steps.deployment.outputs.page_url }} # To get the URL of the deployed page
+
+    steps:
+    - name: Checkout repository (optional, only if you need files from this repo)
+      uses: actions/checkout@v4
+
+    - name: Download GitHub Pages artifact from builder repository
+      uses: actions/download-artifact@v4
+      with:
+        name: github-pages # Name of the artifact uploaded by actions/upload-pages-artifact
+        repository: your-username/pages-builder-repo # Replace with your builder repo name
+        run-id: ${{ github.event.workflow_run.id }} # ID of the workflow run that created the artifact
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
